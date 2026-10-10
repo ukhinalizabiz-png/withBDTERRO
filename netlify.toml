@@ -1,0 +1,8 @@
+# Сайт статический: собирать нечего, публикуется корень репозитория.
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"

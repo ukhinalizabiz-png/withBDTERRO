@@ -17,7 +17,11 @@
   <div class="box">
     <b>Такой страницы нет</b>
     <p>Адрес набран с ошибкой или страницу унесли в архив вместе с коробками TERRO.</p>
-    <a href="/withBDTERRO/">К началу</a>
+    <a id="home" href="/withBDTERRO/">К началу</a>
   </div>
+  <script>
+    // На GitHub сайт лежит в подпапке, на зеркале Netlify в корне.
+    document.getElementById('home').href = location.hostname.endsWith('github.io') ? '/withBDTERRO/' : '/';
+  </script>
 </body>
 </html>
