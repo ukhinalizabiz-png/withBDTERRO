@@ -1047,6 +1047,7 @@ body.ten .lamp { animation: none !important; opacity: 1; }
 .final-paper p { margin: 0 0 10px; }
 .final-paper .group { width: 100%; border-radius: 2px; margin-bottom: 12px; filter: grayscale(.3) sepia(.2); }
 .final-paper .stamp { font-size: 12px; }
+.final-done { font-weight: 700; line-height: 1.35; border-top: 1px dashed rgba(23, 34, 26, .35); padding-top: 10px; }
 .fin-x {
   position: absolute; right: 6px; top: 6px; width: 34px; height: 34px; z-index: 3;
   display: grid; place-items: center; border-radius: 50%;
