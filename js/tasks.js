@@ -284,10 +284,12 @@ async function haggle(sc) {
     [0, 'Все, забирай бесплатно. У тебя день рождения, у нас акция.'],
   ];
   const fmt = n => n ? `${n.toLocaleString('ru-RU')} ₽` : 'БЕСПЛАТНО';
+  const labels = ['Торговаться', 'Торговаться еще', 'Торговаться сильнее', 'Ну Сережа!'];
   const body = panel(sc, `<div class="price-tag"><small>ПОДСКАЗКА · 1 шт.</small><div class="old-prices"></div><div class="price" id="pr">${fmt(1000000)}</div></div>
-    <button class="btn wide" id="haggle">Торговаться</button>`, { kind: 'paper' });
+    <p class="task-hint">Жми, пока не сдастся. Он сдается не сразу</p>
+    <button class="btn wide" id="haggle">${labels[0]}</button>`, { kind: 'paper' });
   const btn = $('#haggle', body), pr = $('#pr', body), old = $('.old-prices', body);
-  for (const [n, line] of steps) {
+  for (const [i, [n, line]] of steps.entries()) {
     await onceClick(btn);
     btn.disabled = true;
     old.insertAdjacentHTML('beforeend', `<s>${pr.textContent}</s>`);
@@ -295,9 +297,11 @@ async function haggle(sc) {
     pr.classList.remove('stamp-in'); void pr.offsetWidth; pr.classList.add('stamp-in');
     A.sfx('stamp');
     await say('seryozha', line);
+    if (labels[i + 1]) btn.textContent = labels[i + 1];
     btn.disabled = false;
   }
   btn.remove();
+  $('.task-hint', body)?.remove();
   await wait(300);
   closePanel(sc);
   return 'Его режут на всех.';

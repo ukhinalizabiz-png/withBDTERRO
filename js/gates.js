@@ -192,7 +192,7 @@ export async function stairs(back) {
     $('.fax', el).classList.add('printing');
     A.sfx('fax');
     await wait(1700);
-    await UI.sheet(`<div class="paper fax-paper"><div class="fax-head">ФАКС · ВХОДЯЩИЙ · 2009</div><p>Юра, это ты из 2009 года. Все получится.</p><p>P.S. Назови бренд покороче. Например, Терро.</p></div>`, { btn: 'Подняться на второй этаж', cls: 'fax-wrap' });
+    await UI.sheet(`<div class="paper fax-paper"><div class="fax-head">ФАКС · ВХОДЯЩИЙ · ОТ ВСЕХ ОТДЕЛОВ</div><p>Юра, у тебя все получится! Создавай и реализуй, а мы поддержим!</p><p>P.S. В офисе ждет третий подарок, которого нет здесь)</p></div>`, { btn: 'Подняться на второй этаж', cls: 'fax-wrap' });
     await unmount(sc);
     return true;
   } catch (e) {

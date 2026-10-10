@@ -146,6 +146,28 @@ function marimba(freq, at, vol = 0.05) {
   tone(freq * 4.1, 0.16, { type: 'sine', vol: vol * 0.16, at, attack: 0.003 });
 }
 
+// «Happy birthday to you» в миноре, на той же расстроенной шкатулке. Мелодия народная.
+const BIRTHDAY = [
+  [-2, .5], [-2, .5], [-1, 1], [-2, 1], [3, 1], [1, 2],
+  [-2, .5], [-2, .5], [-1, 1], [-2, 1], [5, 1], [3, 2],
+  [-2, .5], [-2, .5], [10, 1], [6, 1], [3, 1], [1, 1], [-1, 2],
+  [8, .5], [8, .5], [6, 1], [3, 1], [5, 1], [3, 3],
+];
+let hbTimer = null, hbIdx = 0;
+function birthdayStep() {
+  if (!on || !ctx || ambMode !== 'finale') { hbTimer = null; return; }
+  const [n, len] = BIRTHDAY[hbIdx];
+  const f = semi(n) * 0.5;
+  boxNote(f, 0.055);
+  tone(f * 1.414, 1.2, { type: 'sine', vol: 0.006, attack: 0.15 });   // тритон снизу, чтобы было не по-доброму
+  const slow = 1 + hbIdx * 0.012;                                      // к концу замедляется
+  hbIdx++;
+  if (hbIdx >= BIRTHDAY.length) { hbIdx = 0; hbTimer = setTimeout(birthdayStep, 9000); return; }
+  hbTimer = setTimeout(birthdayStep, len * 620 * slow);
+}
+function startBirthday() { if (!hbTimer && ctx) { hbIdx = 0; hbTimer = setTimeout(birthdayStep, 1200); } }
+function stopBirthday() { clearTimeout(hbTimer); hbTimer = null; }
+
 let lullTimer = null, lullStep = 0, lullBar = 0;
 function playLullaby() {
   if (!on || !ctx || ambMode === 'finale') { lullTimer = setTimeout(playLullaby, 4000); return; }
@@ -185,6 +207,7 @@ function startMusic() {
 function stopMusic() {
   clearTimeout(lullTimer); lullTimer = null;
   clearTimeout(phoneTimer); phoneTimer = null;
+  stopBirthday();
 }
 
 const CHORDS = {
@@ -255,7 +278,7 @@ function applyMode() {
     o.frequency.setTargetAtTime(CHORDS[ambMode][0][i] * (fin ? 2 : 1), T(), 0.8);
   });
   amb.pg.gain.setTargetAtTime(fin ? 0.05 : 0.022, T(), 0.8);
-  if (fin) startCrackle(); else stopCrackle();
+  if (fin) { startCrackle(); startBirthday(); } else { stopCrackle(); stopBirthday(); }
 }
 
 export function ambient(mode) {
