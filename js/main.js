@@ -33,6 +33,11 @@ document.addEventListener('click', e => {
 function syncSound() { $$('.snd').forEach(b => { b.innerHTML = SPEAKER(A.isOn()); b.classList.toggle('muted', !A.isOn()); }); }
 
 // ---------- заставка ----------
+// Встроенный браузер Телеграма режет звук, поэтому предупреждаем сразу.
+// ?tg в адресе показывает ту же подсказку для проверки.
+const TG_FLAG = new URLSearchParams(location.search).has('tg');   // адрес чистится при ?reset, поэтому читаем сразу
+const inTelegram = () => !!(window.TelegramWebviewProxy || window.Telegram?.WebView || /Telegram/i.test(navigator.userAgent) || TG_FLAG);
+
 function intro() {
   const back = S.entered;
   const el = h(`<section class="screen intro">
@@ -42,6 +47,7 @@ function intro() {
       <button class="btn wide" data-s="1">Войти со звуком</button>
       <button class="btn ghost wide" data-s="0">Без звука</button>
       <p class="intro-note">Звук можно выключить в любой момент, кнопка справа сверху.</p>
+    ${inTelegram() ? '<p class="intro-tg">Открыто внутри Телеграма. Если звука не будет, нажми три точки справа сверху и выбери «Открыть в Safari»</p>' : ''}
     </div>
   </section>`);
   $('#screens').append(el);

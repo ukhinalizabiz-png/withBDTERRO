@@ -124,6 +124,7 @@ input { font: inherit; }
 .intro-top { font-family: var(--f-sub); font-weight: 700; font-size: 11px; letter-spacing: .16em; color: var(--dim); }
 .intro-crt { width: 100%; display: grid; place-items: center; }
 .intro-actions { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 10px; }
+.intro-tg { margin: 2px 0 0; max-width: 340px; font-family: var(--f-sub); font-weight: 600; font-size: 12.5px; line-height: 1.35; color: var(--crt); text-align: center; }
 .intro-note { margin: 6px 0 0; font-family: var(--f-mono); font-size: 13px; line-height: 1.4; color: var(--dim); text-align: center; }
 
 /* ---------- ЭЛТ-экран ---------- */
@@ -1065,4 +1066,15 @@ body.ten .lamp { animation: none !important; opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   .static, .crt-box::after, .tt-spin, .person.talking .fig, .person.talking .mon { animation: none !important; }
+}
+
+/* Телефон повернули боком: дом сжимается до спичечного коробка, лучше попросить вернуть. */
+.rotate-hint { display: none; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .rotate-hint {
+    position: fixed; inset: 0; z-index: 200; display: grid; align-content: center; gap: 10px;
+    padding: 24px; text-align: center; background: rgba(4, 7, 5, .97);
+  }
+  .rotate-hint b { font-family: var(--f-pixel); font-size: 22px; color: var(--crt); letter-spacing: .04em; }
+  .rotate-hint small { font-family: var(--f-sub); font-weight: 600; font-size: 13px; color: var(--mid); }
 }
