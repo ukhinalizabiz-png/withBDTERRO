@@ -35,6 +35,9 @@ function syncSound() { $$('.snd').forEach(b => { b.innerHTML = SPEAKER(A.isOn())
 // ---------- заставка ----------
 // Встроенный браузер Телеграма режет звук, поэтому предупреждаем сразу.
 // ?tg в адресе показывает ту же подсказку для проверки.
+// На зеркале внизу справа значок хостинга, под него освобождаем место.
+if (location.hostname.endsWith('netlify.app')) document.documentElement.classList.add('on-netlify');
+
 const TG_FLAG = new URLSearchParams(location.search).has('tg');   // адрес чистится при ?reset, поэтому читаем сразу
 const inTelegram = () => !!(window.TelegramWebviewProxy || window.Telegram?.WebView || /Telegram/i.test(navigator.userAgent) || TG_FLAG);
 

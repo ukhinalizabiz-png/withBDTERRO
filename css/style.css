@@ -59,6 +59,9 @@ input { font: inherit; }
   isolation: isolate;
 }
 #app.in-office { --clue-h: calc(58px + env(safe-area-inset-bottom)); }
+/* На зеркале Netlify внизу справа висит значок хостинга: поднимаем полоску подсказок над ним. */
+html.on-netlify #app.in-office { --clue-h: calc(118px + env(safe-area-inset-bottom)); }
+html.on-netlify #cluebar { bottom: 60px; }
 @media (min-width: 640px) and (min-height: 720px) {
   #app { height: min(calc(100dvh - 32px), 900px); border-radius: 28px; box-shadow: 0 0 0 9px #0e1310, 0 0 0 10px #27322b, 0 40px 90px rgba(0, 0, 0, .7); }
 }
