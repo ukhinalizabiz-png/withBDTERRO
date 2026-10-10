@@ -125,6 +125,68 @@ export function loop(name, every) {
   return () => clearInterval(id);
 }
 
+// ---------- музыка: детская шкатулка, только расстроенная ----------
+// Полутона от ля первой октавы. Мелодия своя, в миноре, медленная.
+const LULLABY = [[0, 1], [3, 1], [7, 1], [3, 1], [2, 1], [0, 1], [-1, 1], [2, 1],
+  [0, 1], [3, 1], [7, 1], [8, 1], [7, 1], [5, 1], [3, 2], [2, 2]];
+const semi = n => 440 * Math.pow(2, n / 12);
+
+// Удар молоточка по зубцу и долгий звон с обертонами.
+function boxNote(freq, vol = 0.042) {
+  noise(0.012, { type: 'highpass', freq: 5200, vol: vol * 0.45 });
+  [[1, 1, 2.2], [2.76, 0.3, 1.5], [5.4, 0.1, 0.9]].forEach(([k, amp, dur]) => {
+    tone(freq * k, dur, { type: 'sine', vol: vol * amp, attack: 0.006 });
+  });
+}
+
+// Маримба: короткая фигура, как у телефона, дважды подряд.
+function marimba(freq, at, vol = 0.05) {
+  noise(0.012, { type: 'bandpass', freq: 1900, q: 1.2, vol: vol * 0.35, at });
+  tone(freq, 0.5, { type: 'sine', vol, at, attack: 0.004 });
+  tone(freq * 4.1, 0.16, { type: 'sine', vol: vol * 0.16, at, attack: 0.003 });
+}
+
+let lullTimer = null, lullStep = 0, lullBar = 0;
+function playLullaby() {
+  if (!on || !ctx || ambMode === 'finale') { lullTimer = setTimeout(playLullaby, 4000); return; }
+  const [n, len] = LULLABY[lullStep];
+  // шкатулка подсаживается по высоте и иногда проглатывает ноту
+  const drift = 1 - (lullBar % 3) * 0.006;
+  if (!(lullBar > 0 && Math.random() < 0.1)) boxNote(semi(n) * drift * (lullBar % 4 === 3 ? 0.5 : 1));
+  lullStep++;
+  if (lullStep >= LULLABY.length) { lullStep = 0; lullBar++; }
+  const beat = lullBar % 4 === 3 ? 0.78 : 0.62;
+  const pause = lullStep === 0 ? 3200 : 0;
+  lullTimer = setTimeout(playLullaby, len * beat * 1000 + pause);
+}
+
+// Где-то в офисе звонит телефон. Не звоним там, где телефон звонит по сюжету.
+let phoneTimer = null;
+function phoneAllowed() {
+  return on && ctx && ambMode !== 'finale' && !document.querySelector('[data-scene="sales"], [data-scene="call"]');
+}
+function phoneRing() {
+  const fig = [1046.5, 783.99, 659.25, 783.99, 1046.5, 1318.5];
+  for (let r = 0; r < 3; r++) {
+    if (r && Math.random() < 0.25) break;
+    fig.forEach((f, i) => marimba(f, r * 2.1 + i * 0.13, 0.038));
+  }
+}
+function schedulePhone() {
+  phoneTimer = setTimeout(() => {
+    if (phoneAllowed()) { try { phoneRing(); } catch {} }
+    schedulePhone();
+  }, 80000 + Math.random() * 100000);
+}
+function startMusic() {
+  if (!lullTimer) { lullStep = 0; lullBar = 0; lullTimer = setTimeout(playLullaby, 1800); }
+  if (!phoneTimer) schedulePhone();
+}
+function stopMusic() {
+  clearTimeout(lullTimer); lullTimer = null;
+  clearTimeout(phoneTimer); phoneTimer = null;
+}
+
 const CHORDS = {
   office: [[55, 65.41, 82.41], [43.65, 65.41, 87.31], [36.71, 55, 73.42], [41.2, 61.74, 82.41]],
   finale: [[65.41, 82.41, 98], [49, 73.42, 98], [55, 65.41, 82.41], [43.65, 65.41, 87.31]],
@@ -170,6 +232,7 @@ function startAmbient() {
 
   amb = { out, nodes: [hum, hum2, lfo, ...oscs], timer, hg, pg, oscs };
   applyMode();
+  startMusic();
 }
 
 function stopAmbient() {
@@ -180,6 +243,7 @@ function stopAmbient() {
   a.out.gain.setTargetAtTime(0.0001, T(), 0.3);
   setTimeout(() => a.nodes.forEach(n => { try { n.stop(); } catch {} }), 1500);
   stopCrackle();
+  stopMusic();
 }
 
 function applyMode() {

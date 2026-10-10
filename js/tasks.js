@@ -60,7 +60,7 @@ async function sales(sc) {
   stop();
   ph.classList.remove('ringing'); ph.classList.add('lifted');
   closePanel(sc);
-  await say('egor', 'Добрый день! Компания Терро, у нас для вас уникальное предложение на сноуборды.');
+  await say('egor', 'Добрый день! Егор, TERRO/PRIME, у нас для вас уникальное предложение на сноуборды.');
   const i = await UI.choose(sc, ['«Я вообще-то основатель Терро»', '«Интересно, расскажите»', '«Перезвоните позже»'], { title: 'ЧТО ОТВЕТИТЬ?' });
   if (i === 0) await say('egor', 'Леонид, у нас ошибка в базе, директор попал в холодные.');
   if (i === 1) await say('nastya', 'Егор, он клюнул! Неси договор.');
