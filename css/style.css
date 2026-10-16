@@ -1080,4 +1080,6 @@ body.ten .lamp { animation: none !important; opacity: 1; }
   }
   .rotate-hint b { font-family: var(--f-pixel); font-size: 22px; color: var(--crt); letter-spacing: .04em; }
   .rotate-hint small { font-family: var(--f-sub); font-weight: 600; font-size: 13px; color: var(--mid); }
+  /* Клавиатура ужимает окно по высоте, и оно «ложится» боком, хотя телефон стоит. Класс ставит main.js. */
+  .upright .rotate-hint { display: none; }
 }
