@@ -32,6 +32,22 @@ document.addEventListener('click', e => {
 });
 function syncSound() { $$('.snd').forEach(b => { b.innerHTML = SPEAKER(A.isOn()); b.classList.toggle('muted', !A.isOn()); }); }
 
+// ---------- «Поверни телефон» ----------
+// CSS судит по окну, а клавиатура делает его низким и широким, будто телефон боком.
+// Поэтому спрашиваем сам экран; пока печатают ответ, подсказку не показываем вовсе.
+function syncUpright() {
+  const t = screen.orientation?.type;
+  const portrait = t ? t.startsWith('portrait') : typeof window.orientation === 'number' && window.orientation % 180 === 0;
+  const typing = !!document.activeElement?.matches('input, textarea, [contenteditable]');
+  document.documentElement.classList.toggle('upright', portrait || typing);
+}
+screen.orientation?.addEventListener('change', syncUpright);
+addEventListener('orientationchange', syncUpright);
+addEventListener('resize', syncUpright);
+document.addEventListener('focusin', syncUpright);
+document.addEventListener('focusout', () => setTimeout(syncUpright));
+syncUpright();
+
 // ---------- заставка ----------
 // Встроенный браузер Телеграма режет звук, поэтому предупреждаем сразу.
 // ?tg в адресе показывает ту же подсказку для проверки.
